@@ -42,12 +42,11 @@ function Search({searchResultsData}) {
     )
 }
 export async function getServerSideProps({query}){
-    const res = await fetch(`http://localhost:5000/hotels?city=${query.location}`);
+    const res = await fetch(`https://my-json-server.typicode.com/ynaji80/mockApi/hotels?city=${query.location}`);
     const searchResultsData = await res.json();
     return {
         props :{
             searchResultsData,
-    
         }
     }    
 }
