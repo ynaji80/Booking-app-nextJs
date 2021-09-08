@@ -21,7 +21,7 @@ function Map({searchResultsData}) {
         longitude: centerCoord.longitude,
         zoom: 10
     });
-    console.log(selectedResult)
+    
     return (
         <ReactMapGL 
             mapStyle='mapbox://styles/ynaji80/cktax9gk24j9g18mp7l0ccro9' 

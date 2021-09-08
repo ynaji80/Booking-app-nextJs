@@ -52,12 +52,11 @@ function Search({searchResultsData}) {
     )
 }
 export async function getServerSideProps({query}){
-    const {startDate,endDate,location}=query;
+    const {startDate,endDate}=query;
     const checkDate=new Date(startDate).toLocaleDateString().split('/').reverse().join('-');
     const uncheckDate=new Date(endDate).toLocaleDateString().split('/').reverse().join('-');
-    var locationQuery =`city=${query.location}`
-    if(location=='') locationQuery='';
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+
+    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?city=${query.location}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
     return {
         props :{
