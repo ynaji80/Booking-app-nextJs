@@ -57,12 +57,12 @@ function Header({placeholder}) {
                 />
             </div>
             <div className={`flex items-center justify-between md:border-2 rounded-full py-2  md:shadow-sm ${textInput? 'shadow-lg border-none bg-white': 'bg-gray-100 md:bg-white'} `}>
-                <input type='text' value={textInput} onChange={(e) => {setTextInput(e.target.value)}} placeholder={placeholder || "Saisir votre destination"} className='flex-grow outline-none bg-transparent text-gray-500 text-sm px-4 '/>
+                <input type='text' value={textInput} onChange={(e) => {setTextInput(e.target.value)}} placeholder={placeholder || "Where to go?"} className='flex-grow font-niramit outline-none bg-transparent text-gray-500 text-sm px-4 '/>
                 <button onClick={search} disabled={textInput==""} className={`mr-1 relative h-[40px] w-[40px] ${!textInput ? '' :'hover:bg-red-400 hover:rounded-full'}`}><SearchIcon className={`absolute top-1 -left-1 right-0 inline-flex h-8 group-hover:gb-red-300  rounded-full p-1 text-white hover:ring-2 hover:ring-white disabled:bg-red-300 cursor-pointer mx-2 ${!textInput ? 'bg-red-300' :'bg-red-400'}`}/></button>
             </div>
             <div className='lg:inline-flex space-x-4 items-center justify-end hidden text-gray-600'>
-                    <p className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Devenir hôte</p>
-                    <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>M'identifier</p>
+                    <p className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 font-niramit rounded-full '>Become a host</p>
+                    <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-niramit font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Login in</p>
             </div>
             <div>
                 {!toggle ?
@@ -70,11 +70,11 @@ function Header({placeholder}) {
                 :
                 <div className=' lg:hidden flex flex-col items-end absolute right-8 translate-y-[60vh] '>
                     <ul className='px-4 py-3 mb-3 relative bg-gray-900 w-36 rounded-xl shadow-xl '>
-                        <li onClick={() =>{router.push('/');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white  font-poppings cursor-pointer'>Home
+                        <li onClick={() =>{router.push('/');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white  font-niramit cursor-pointer'>Home
                         </li>
-                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-poppings cursor-pointer'>Login
+                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Login
                         </li>
-                        <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-poppings cursor-pointer'>Devenir Hôte
+                        <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Devenir Hôte
                         </li>
                     </ul>
                     <MenuIcon onClick={() => setToggle(!toggle)} className=' h-12 w-12 text-white bg-red-600 rounded-full shadow-xl  p-2 active:scale-90 transition duration-150  cursor-pointer ' />

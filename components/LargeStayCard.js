@@ -11,7 +11,7 @@ function LargeStayCard({img,title}) {
                 />
             </div>
             <div>
-            <h3 className='font-bold'>{title}</h3>
+            <h3 className='font-bold font-niramit'>{title}</h3>
             </div>
         </div>
     )

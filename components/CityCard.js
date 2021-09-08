@@ -22,8 +22,8 @@ function MediumCard({img,location,country}) {
                 />
             </div>
             <div>
-                <h3 className='font-bold'>{location}</h3>
-                <h5 className='text-gray-500'>{country}</h5>
+                <h3 className='font-bold font-niramit'>{location}</h3>
+                <h5 className='text-gray-500 font-niramit'>{country}</h5>
             </div>
         </div>
     )

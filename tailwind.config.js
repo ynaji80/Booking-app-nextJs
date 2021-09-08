@@ -8,7 +8,8 @@ module.exports = {
         'body':["Lato",'sans-serif'],
         'roboto':["Roboto",'sans-serif'],
         'poppings':["Poppings",'sans-serif'],
-        'niramit':["Niramit",'sans-serif']
+        'niramit':["Niramit",'sans-serif'],
+        'black':["Black Han Sans",'sans-serif']
     },
       boxShadow: {
         '5xl': '20px 20px 20px rgba(0,0,1,0.5)',
