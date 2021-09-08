@@ -1,16 +1,26 @@
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 function Banner() {
+    const router= useRouter();
+
     return (
-        <div className='relative h-[400px] sm:h-[400px] lg:h-[500px] '>
+        <div onClick={()=>router.push({
+            pathname:'/search',
+            query:{
+                location: '',
+                startDate : new Date().toISOString(),
+                endDate : new Date().toISOString(),
+                noGuests : 1
+            }})} className='relative opacity-90 h-[400px] sm:h-[400px] lg:h-[600px] '>
             <Image 
-                src='https://a0.muscache.com/im/pictures/e4a2a61c-589f-4e49-b3b8-968a6bc23389.jpg?im_w=2560' 
+                src="https://images.unsplash.com/flagged/photo-1570209432247-1bb8b87a7bda?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1510&q=80" 
                 layout='fill'
                 objectFit='cover'
             />
-            <div className='absolute top-5 w-full text-center font-bold md:px-16 md:text-left md:top-1/2 md:w-[450px] '>
-                <p className='text-white text-xl md:text-3xl'>Not sure where to go? Perfect</p>
-                <button className=' bg-white text-gray-900 rounded-full py-4 px-10 font-bold mt-2 shadow-md hover:shadow-xl active:scale-90 transition duration-150'>I'm flexible</button>
+            <div className='absolute md:mt-10 top-1/2 w-full text-center font-bold  '>
+                <p className='text-white text-3xl md:text-4xl'>On vous aide à planifier vos vacances</p>
+                <button className=' mt-6 bg-white text-sm md:text-lg text-gray-900 rounded-full py-4 px-10 font-bold shadow-md hover:shadow-xl active:scale-90 transition duration-150'>Explore our stays</button>
             </div>
         </div>
     )

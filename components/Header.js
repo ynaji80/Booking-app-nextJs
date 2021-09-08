@@ -1,15 +1,16 @@
 import Image from 'next/image';
-import {SearchIcon,GlobeAltIcon,MenuIcon,UserCircleIcon,UsersIcon} from '@heroicons/react/solid'
+import {SearchIcon, MenuIcon, HomeIcon, LoginIcon} from '@heroicons/react/solid'
 import { useState } from 'react';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker,DateRange } from 'react-date-range';
 import { useMediaQuery } from "@react-hook/media-query";
 import { useRouter } from 'next/router'
+import logo from '../public/booking-logo.png'
 
 function Header({placeholder}) {
     const [textInput,setTextInput]=useState('');
-    
+    const [toggle, setToggle] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState( new Date());
     const [numberGuests, setNumberGuests] = useState(1);
@@ -23,18 +24,19 @@ function Header({placeholder}) {
         setEndDate(ranges.selection.endDate);
     }
     const isSmallScreen = useMediaQuery("(max-width: 36rem)");
+
     const resetInput = () => {
         setTextInput('');
         }
     
     const router= useRouter();
     const search = () =>{
- 
+        
         resetInput();
         const url = router.push({
             pathname:'/search',
             query:{
-                location: textInput,
+                location: textInput.charAt(0).toUpperCase() + textInput.slice(1).toLowerCase(),
                 startDate : startDate.toISOString(),
                 endDate : endDate.toISOString(),
                 noGuests : numberGuests
@@ -45,27 +47,44 @@ function Header({placeholder}) {
     return (
         <>
         
-        <header className='sticky top-0 z-50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-none bg-white shadow-sm py-3 px-5 md:px-10'>
-            <div onClick={() =>router.push('/')} className="relative h-8 hidden md:flex items-center cursor-pointer my-auto ">
+        <header className=' sticky top-0 z-50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-none bg-white shadow-sm py-3 px-5 md:px-10'>
+            <div onClick={() =>router.push('/')} className=" relative ml-4 h-14 hidden md:flex items-center cursor-pointer my-auto ">
                 <Image 
-                    src="https://links.papareact.com/qd3"
+                    src= {logo}
                     layout='fill'
                     objectFit='contain'
                     objectPosition='left'               
                 />
             </div>
             <div className={`flex items-center justify-between md:border-2 rounded-full py-2  md:shadow-sm ${textInput? 'shadow-lg border-none bg-white': 'bg-gray-100 md:bg-white'} `}>
-                <input type='text' value={textInput} onChange={(e) => {setTextInput(e.target.value)}} placeholder={placeholder || "Where are you going?"} className='flex-grow outline-none bg-transparent text-gray-500 text-sm px-4 '/>
+                <input type='text' value={textInput} onChange={(e) => {setTextInput(e.target.value)}} placeholder={placeholder || "Saisir votre destination"} className='flex-grow outline-none bg-transparent text-gray-500 text-sm px-4 '/>
                 <button onClick={search} disabled={textInput==""} className={`mr-1 relative h-[40px] w-[40px] ${!textInput ? '' :'hover:bg-red-400 hover:rounded-full'}`}><SearchIcon className={`absolute top-1 -left-1 right-0 inline-flex h-8 group-hover:gb-red-300  rounded-full p-1 text-white hover:ring-2 hover:ring-white disabled:bg-red-300 cursor-pointer mx-2 ${!textInput ? 'bg-red-300' :'bg-red-400'}`}/></button>
             </div>
-            <div className='lg:inline-flex items-center justify-end hidden text-gray-600'>
-                <p className='hidden md:inline cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 hover:rounded-full '>Become a host</p>
-                <GlobeAltIcon className='h-10 hidden md:inline cursor-pointer bg-white p-2 hover:bg-gray-100 hover:rounded-full'/>
-                <div className='flex items-center ml-2 border-2 rounded-full p-2 space-x-2 shadow-sm hover:shadow-md cursor-pointer'>
-                    <MenuIcon className='h-6'/>
-                    <UserCircleIcon className='h-6'/>
-                </div>
+            <div className='lg:inline-flex space-x-4 items-center justify-end hidden text-gray-600'>
+                    <p className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Devenir hôte</p>
+                    <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>M'identifier</p>
             </div>
+            <div>
+                {!toggle ?
+                <MenuIcon onClick={() => setToggle(!toggle)} className='inline lg:hidden absolute h-12 w-12 text-white bg-red-600 rounded-full shadow-xl right-8 p-2 translate-y-[75vh] cursor-pointer active:scale-90 transition duration-150 z-50 overflow-none' />
+                :
+                <div className=' lg:hidden flex flex-col items-end absolute right-8 translate-y-[60vh] '>
+                    <ul className='px-4 py-3 mb-3 relative bg-gray-900 w-36 rounded-xl shadow-xl '>
+                        <li onClick={() =>{router.push('/');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white  font-poppings cursor-pointer'>Home
+                        </li>
+                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-poppings cursor-pointer'>Login
+                        </li>
+                        <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-poppings cursor-pointer'>Devenir Hôte
+                        </li>
+                    </ul>
+                    <MenuIcon onClick={() => setToggle(!toggle)} className=' h-12 w-12 text-white bg-red-600 rounded-full shadow-xl  p-2 active:scale-90 transition duration-150  cursor-pointer ' />
+                </div>
+                }
+            </div>
+                
+                
+
+            
             {textInput &&
          
                 <div className='flex flex-col mt-4 mx-auto col-span-3'>

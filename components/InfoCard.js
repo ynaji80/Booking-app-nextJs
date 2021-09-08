@@ -1,8 +1,12 @@
 import Image from 'next/image';
 import {HeartIcon} from '@heroicons/react/outline';
+import {HeartIcon as Heart} from '@heroicons/react/solid';
+import {useState} from 'react';
 import {StarIcon} from '@heroicons/react/solid';
 
 function InfoCard({img,location,title,description,star,price,total}) {
+    const [starred, setStarred] = useState(false);
+
     return (
         <div className='flex flex-col md:flex-row space-x-4 md:space-x-7 font-body rounded-2xl py-4 md:py-7 px-2 md:pr-6 border-b group hover:shadow-xl hover:opacity-90 first:border-t'>
             <div className='relative mx-auto w-80 h-52 md:w-80 md:h-52 flex-shrink-0 group-hover:scale-95 transform transition duration-300 ease-out'>
@@ -16,7 +20,11 @@ function InfoCard({img,location,title,description,star,price,total}) {
             <div className='flex flex-col flex-grow mt-4'>
                 <div className='flex mr-2 md:mr-0 justify-between' >
                     <h1 className='text-gray-500 text-sm  md:text-lg'>{location}</h1>
-                    <HeartIcon className='h-7 cursor-pointer hover:text-red-600'/>
+                    {!starred?
+                        <HeartIcon onClick={() => setStarred(!starred)} className='h-7 cursor-pointer hover:text-red-600'/>
+                        :
+                        <Heart onClick={() => setStarred(!starred)} className='h-7 cursor-pointer text-red-600'/>
+                    }
                 </div>    
                 <h1 className='md:text-xl text-base text-gray-600 font-semibold'>{title}</h1>
                 <p className="mt-2 text-base md:text-lg text-gray-400 font-medium flex-grow">{description}</p>
