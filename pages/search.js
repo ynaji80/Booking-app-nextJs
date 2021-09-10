@@ -12,7 +12,7 @@ function Search({searchResultsData}) {
     const {location, startDate, endDate, noGuests} = router.query;
     const formattedEndDate = format(new Date(endDate), "do MMM, yyyy");
     const formattedStartDate = format(new Date(startDate), "do MMM, yyyy");
-    const placeholder =`${location} | ${format(new Date(startDate), "dd MMM, yyyy")} | ${format(new Date(endDate), "dd MMM, yyyy")} | ${noGuests} guests`;
+    const placeholder =`${location? `${location} |`:''} ${format(new Date(startDate), "dd MMM, yyyy")} | ${format(new Date(endDate), "dd MMM, yyyy")} | ${noGuests} guests`;
 
     return (
         <div>
@@ -43,9 +43,9 @@ function Search({searchResultsData}) {
                         )}
                     </div>
                 </section>
-                <section className='hidden xl:inline-flex xl:min-w-[600px]'>
+                {searchResultsData.length ? <section className='hidden mx-auto xl:inline-flex xl:min-w-[600px]'>
                     <Map searchResultsData={searchResultsData}/>
-                </section>       
+                </section>:false}       
             </main>
             <Footer />
         </div>
@@ -55,8 +55,8 @@ export async function getServerSideProps({query}){
     const {startDate,endDate,location}=query;
     const checkDate=new Date(startDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
-    console.log(checkDate,uncheckDate)
     var locationQuery =`city=${query.location}`
+    console.log(locationQuery)
     if(location=='') locationQuery='';
     const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();

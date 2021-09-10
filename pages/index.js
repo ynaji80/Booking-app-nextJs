@@ -5,13 +5,16 @@ import SmallCard from '../components/SmallCard';
 import CityCard from '../components/CityCard';
 import StayCard from '../components/StayCard';
 import LargeStayCard from '../components/LargeStayCard';
-import Image from 'next/image'
-import LargeCard from '../components/LargeCard';
+import Image from 'next/image';
 import Footer from '../components/Footer';
 import hostImage from '../public/host.webp'
+import ArticleCard from '../components/ArticleCard';
+import { useState } from 'react';
+import {Transition, animated} from 'react-spring';
 
-export default function Home({cityCardsData,stayCardsData}) {
-  return (
+export default function Home({cityCardsData, stayCardsData, articleCardsData}) {
+  const [articleCategory, setArticleCategory] = useState('Destinations');
+  return ( 
     <div>
       <Head>
         <title>Booking App</title>
@@ -35,7 +38,7 @@ export default function Home({cityCardsData,stayCardsData}) {
         </section>
         <section className='mt-14'>
           <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-niramit'>Special stays</h1>
-          <div className='mt-5  flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
+          <div className='mt-5  flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
               {stayCardsData.slice(0,3)?.map((card,index) =>(
                   <StayCard   key={index}
                               img={card.img}
@@ -43,7 +46,7 @@ export default function Home({cityCardsData,stayCardsData}) {
                   />
               ))}
           </div>
-          <div className=' flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
+          <div className=' flex flex-col space-y-4 items-center lg:space-y-0 lg:flex-row lg:justify-between p-3'>
               {stayCardsData.slice(3)?.map((card,index) =>(
                       <LargeStayCard 
                                   key={index}
@@ -71,42 +74,49 @@ export default function Home({cityCardsData,stayCardsData}) {
         
         </section>
 
-        <main className='max-w-7xl mx-auto px-10 sm:px-16 '>
-
-        <section className='mt-14'>
+      <section className='max-w-7xl mt-14 mx-auto px-10 sm:px-16 '>
           <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-niramit'>Trip articles</h1>
-          <div className='mt-5  flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
-              {stayCardsData.slice(0,3)?.map((card,index) =>(
-                  <StayCard   key={index}
-                              img={card.img}
-                              title={card.title}
-                  />
-              ))}
-          </div>
-          <div className=' flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
-              {stayCardsData.slice(3)?.map((card,index) =>(
-                      <LargeStayCard 
-                                  key={index}
-                                  img={card.img}
-                                  title={card.title}
-                      />
-              ))}
-          </div>
-        </section>
-      </main>
+          <ul className='flex mt-8 mb-6 space-x-4  justify-center'>
+            <button disabled={articleCategory=='Destinations'} onClick={(e)=>setArticleCategory(e.target.innerText)} className='cursor-pointer disabled:text-red-800 hover:underline text-gray-500  font-semibold font-niramit focus:text-red-800  hover:text-red-800'>Destinations</button>
+            <button disabled={articleCategory=='Beach'} onClick={(e)=>setArticleCategory(e.target.innerText)} className='cursor-pointer disabled:text-red-800 hover:underline text-gray-500  font-semibold font-niramit hover:text-red-800 focus:text-red-800'>Beach</button>
+            <button disabled={articleCategory=='Travel tips'} onClick={(e)=>setArticleCategory(e.target.innerText)} className='cursor-pointer disabled:text-red-800 hover:underline text-gray-500  font-semibold font-niramit hover:text-red-800 focus:text-red-800'>Travel tips</button>
+          </ul>
+          <Transition
+                items={articleCategory}
+                from={{opacity:0, marginLeft:-120}}
+                enter={{opacity:1, marginLeft:0}}
+                config={{duration:400}}
+            >
+              {(styles,item) =>item && <animated.div style={styles}>
+                      <div className='mt-5 flex flex-col items-center lg:space-y-0 lg:space-x-4 lg:flex-row '>
+                          {(articleCardsData.filter(article => article.category==articleCategory))?.map((article,index) =>(
+                                <ArticleCard  key={index}
+                                              img={article.img}
+                                              title={article.title}
+                                              description={article.description}
+                                />
+                            ))}
+                      </div>
+                  </animated.div>
+                  }
+          </Transition>
+      </section>
       <Footer />
     </div>
   )
 }
+
 export async function getStaticProps(){
   const res1 = await fetch('https://booking-server-api.herokuapp.com/cityCards');
   const cityCardsData = await res1.json();
   const res2 = await fetch('https://booking-server-api.herokuapp.com/stayCards');
   const stayCardsData = await res2.json();
-  
+  const res3 = await fetch('https://booking-server-api.herokuapp.com/articles');
+  const articleCardsData = await res3.json();
   return {props :{
       cityCardsData,
-      stayCardsData
+      stayCardsData,
+      articleCardsData
           }
       }
 }

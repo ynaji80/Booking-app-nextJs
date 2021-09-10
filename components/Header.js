@@ -7,7 +7,28 @@ import { DateRangePicker,DateRange } from 'react-date-range';
 import { useMediaQuery } from "@react-hook/media-query";
 import { useRouter } from 'next/router'
 import logo from '../public/booking-logo.png'
-
+import { useSession } from 'next-auth/client';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
+const cities =[{
+    id: 0,
+    name: 'Paris'
+  },
+  {
+    id: 1,
+    name: 'Marrakech'
+  },
+  {
+    id: 2,
+    name: 'London'
+  },
+  {
+    id: 3,
+    name: 'New York'
+  },
+  {
+    id: 4,
+    name: 'Barcelona'
+  }];
 function Header({placeholder}) {
     const [textInput,setTextInput]=useState('');
     const [toggle, setToggle] = useState(false);
@@ -36,14 +57,17 @@ function Header({placeholder}) {
         const url = router.push({
             pathname:'/search',
             query:{
-                location: textInput.charAt(0).toUpperCase() + textInput.slice(1).toLowerCase(),
+                location: textInput,
                 startDate : startDate.toISOString(),
                 endDate : endDate.toISOString(),
                 noGuests : numberGuests
             }
         });
     }
-
+    const [session] = useSession();
+    const user =session?.user;
+    const loggedIn = session ? true : false;
+    
     return (
         <>
         
@@ -56,13 +80,31 @@ function Header({placeholder}) {
                     objectPosition='left'               
                 />
             </div>
-            <div className={`flex items-center justify-between md:border-2 rounded-full py-2  md:shadow-sm ${textInput? 'shadow-lg border-none bg-white': 'bg-gray-100 md:bg-white'} `}>
-                <input type='text' value={textInput} onChange={(e) => {setTextInput(e.target.value)}} placeholder={placeholder || "Where to go?"} className='flex-grow font-niramit outline-none bg-transparent text-gray-500 text-sm px-4 '/>
-                <button onClick={search} disabled={textInput==""} className={`mr-1 relative h-[40px] w-[40px] ${!textInput ? '' :'hover:bg-red-400 hover:rounded-full'}`}><SearchIcon className={`absolute top-1 -left-1 right-0 inline-flex h-8 group-hover:gb-red-300  rounded-full p-1 text-white hover:ring-2 hover:ring-white disabled:bg-red-300 cursor-pointer mx-2 ${!textInput ? 'bg-red-300' :'bg-red-400'}`}/></button>
+            <div className={`flex items-center justify-between  `}>
+                <div style={{ width: 800 }}>
+                    <ReactSearchAutocomplete
+                            items={cities}
+                            inputSearchString={textInput}
+                            placeholder={placeholder || "Where are you going?"}
+                            styling={{
+                                height: "50px",border: "2px solid #dfe1e5",borderRadius: "30px",backgroundColor: "white",boxShadow: "rgba(32, 33, 36, 0.28) 0px 2px 6px 0px",hoverBackgroundColor: "#f0f0f0",cursor :"pointer", color: "#212121",fontSize: "16px",fontFamily: "Niramit",iconColor: "#c24e4e",
+                                lineColor: "rgb(232, 234, 237)",placeholderColor: "gray",clearIconMargin: '3px 14px 0 0',searchIconMargin: '0 0 0 16px'
+                                }}
+                            onClear={() =>setTextInput('')}
+                            onSearch={() =>{setTextInput('')}}      
+                            onSelect={(item) => setTextInput(item.name)} />
+                </div>
             </div>
             <div className='lg:inline-flex space-x-4 items-center justify-end hidden text-gray-600'>
                     <p className=' ring-1 ring-gray-600 cursor-pointer font-semibold bg-white py-2 px-4 hover:bg-gray-100 font-niramit rounded-full '>Become a host</p>
-                    <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-niramit font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Login in</p>
+                    {!loggedIn ? 
+                        <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-niramit font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Sign in</p>
+                    :
+                        <div onClick={() =>router.push('/login')}  className='flex items-center space-x-2 cursor-pointer'>
+                            <p className='text-md font-semibold font-niramit'> {user.name}</p>
+                            <img className='rounded-full h-8' src={user.image} />
+                        </div>
+                    }
             </div>
             <div>
                 {!toggle ?
@@ -72,7 +114,7 @@ function Header({placeholder}) {
                     <ul className='px-4 py-3 mb-3 relative bg-gray-900 w-36 rounded-xl shadow-xl '>
                         <li onClick={() =>{router.push('/');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white  font-niramit cursor-pointer'>Home
                         </li>
-                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Login
+                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>{loggedIn?`Hey ${user.name.split(' ')[0]}`:'Sign in'}
                         </li>
                         <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Devenir Hôte
                         </li>
