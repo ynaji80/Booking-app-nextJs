@@ -38,7 +38,7 @@ function login() {
     }, [user]);
 
     const addUser = async (user) =>{
-        const res = await fetch('http://localhost:8000/users',{
+        const res = await fetch('https://booking-server-api.herokuapp.com/users',{
             method:'POST',
             headers:{
                 'Content-type':'application/json'
@@ -47,7 +47,7 @@ function login() {
         });
     }
     const fetchUsers = async () =>{
-        const res = await fetch('http://localhost:8000/users');
+        const res = await fetch('https://booking-server-api.herokuapp.com/users');
         const users = await res.json();
         return users;
     }

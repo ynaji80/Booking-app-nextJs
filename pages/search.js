@@ -60,7 +60,7 @@ export async function getServerSideProps({query}){
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     var locationQuery =`city=${query.location}`
     if(location=='') locationQuery='';
-    const res = await fetch(`http://localhost:8000/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
     return {
         props :{

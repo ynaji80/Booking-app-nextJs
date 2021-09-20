@@ -145,7 +145,7 @@ function hotel({hotelData}) {
 }
 
 export async function getServerSideProps({query}){
-    const res = await fetch(`http://localhost:8000/hotels/${query.id}`);
+    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels/${query.id}`);
     const hotelData = await res.json();
     return {
         props :{
