@@ -18,7 +18,7 @@ function Banner() {
                     query:{
                         location: '',
                         startDate : new Date().toISOString(),
-                        endDate : new Date().toISOString(),
+                        endDate : (new Date(new Date().setDate(new Date().getDate()+1))).toISOString(),
                         noGuests : 1
                     }})}
                     className=' mt-6 font-niramit bg-white text-sm md:text-lg text-black rounded-full py-3 px-10 font-bold shadow-md hover:text-pink-700 hover:shadow-xl active:scale-95 transition duration-100 ease-in'>Explore our stays</button>

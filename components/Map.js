@@ -5,7 +5,8 @@ import {LocationMarkerIcon} from '@heroicons/react/solid';
 import Image from 'next/image';
 
 function Map({searchResultsData}) {
-    
+  
+
     const [selectedResult, setSelectedResult] = useState({});
     const coords =searchResultsData.map(result =>
         ({
@@ -15,8 +16,8 @@ function Map({searchResultsData}) {
     );
     const centerCoord = getCenter(coords);
     const [viewport, setViewport] = useState({
-        width :'100%',
-        height :'100%',
+        width :"100%",
+        height :"100%",
         latitude: centerCoord.latitude,
         longitude: centerCoord.longitude,
         zoom: 10

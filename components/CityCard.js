@@ -10,7 +10,7 @@ function MediumCard({img,location,country}) {
             query:{
                 location: location,
                 startDate : new Date().toISOString(),
-                endDate : new Date().toISOString(),
+                endDate : new Date(new Date().setDate(new Date().getDate()+1)).toISOString(),
                 noGuests : 1
             }
         })} className='cursor-pointer hover:scale-105 transform transition duration-300 ease-out '>

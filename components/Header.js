@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {SearchIcon, MenuIcon, HomeIcon, LoginIcon} from '@heroicons/react/solid'
+import {MenuIcon} from '@heroicons/react/solid'
 import { useState } from 'react';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -54,7 +54,7 @@ function Header({placeholder}) {
     const search = () =>{
         
         resetInput();
-        const url = router.push({
+        router.push({
             pathname:'/search',
             query:{
                 location: textInput,
@@ -149,8 +149,8 @@ function Header({placeholder}) {
                         <p className='text-gray-900 text-lg md:text-2xl font-bold flex-grow'>Number of guests</p>
                         <div className='flex space-x-4 p-2 bg-gray-50 rounded-full'>
                             <button className='px-[18px] py-2 bg-gray-200 rounded-full text-gray-900 hover:ring-gray-900 font-semibold hover:ring-1 disabled:bg-gray-100 disabled:ring-0 disabled:font-normal' onClick={() => {if(numberGuests!==1) setNumberGuests(numberGuests-1)}} disabled={numberGuests===1}>-</button>
-                            <input  className='w-8 bg-transparent text-xl outline-none text-red-400 text-center' readOnly="readonly" min={0} max={20} value={numberGuests} type="text"/> 
-                            <button className='px-[16px] py-2 bg-gray-200 rounded-full text-gray-900 hover:ring-gray-900 font-semibold hover:ring-1 disabled:bg-gray-100 disabled:ring-0 disabled:font-normal' onClick={() => {if(numberGuests!==20) setNumberGuests(numberGuests+1);}} disabled={numberGuests===20}>+</button>
+                            <input  className='w-8 bg-transparent text-xl outline-none text-red-400 text-center' readOnly="readonly" min={1} max={9} value={numberGuests} type="text"/> 
+                            <button className='px-[16px] py-2 bg-gray-200 rounded-full text-gray-900 hover:ring-gray-900 font-semibold hover:ring-1 disabled:bg-gray-100 disabled:ring-0 disabled:font-normal' onClick={() => {if(numberGuests!==9) setNumberGuests(numberGuests+1);}} disabled={numberGuests===9}>+</button>
                         </div>
                     </div>
                     <div className='flex mt-2 justify-around items-center'>

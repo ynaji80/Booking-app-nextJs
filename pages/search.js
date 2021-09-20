@@ -21,9 +21,8 @@ function Search({searchResultsData}) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header placeholder={placeholder}/>
-            <main className=' flex'>
-                <section className
-                ='pl-2 md:pl-8 pt-14'>
+            <main className=' flex flex-col lg:flex-row'>
+                <section className=' pl-2 md:pl-8 pt-14'>
                     <p className='text-normal text-gray-600'>300+ stays - <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedStartDate}</span> to <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedEndDate}</span> for {noGuests} guests</p>
                     <h1 className='text-4xl font-bold mt-4 text-gray-800'>{location?`Stays in ${location}`:'Stays everywhere'}</h1>
                 
@@ -31,6 +30,7 @@ function Search({searchResultsData}) {
                         {searchResultsData?.map((item,index)=>(
                             <InfoCard 
                                 key={index}
+                                id={item.id}
                                 img={item.img}
                                 location={item.location}
                                 title={item.title}
@@ -38,12 +38,15 @@ function Search({searchResultsData}) {
                                 star={item.star}
                                 price={item.price}
                                 total={item.total}
+                                startDate={router.query.startDate}
+                                endDate={router.query.endDate}
+                                noGuests={router.query.noGuests}
                             />
                         )
                         )}
                     </div>
                 </section>
-                {searchResultsData.length ? <section className='hidden mx-auto xl:inline-flex xl:min-w-[600px]'>
+                {searchResultsData.length ? <section className=' mx-auto hidden lg:inline-flex lg:min-w-[600px]'>
                     <Map searchResultsData={searchResultsData}/>
                 </section>:false}       
             </main>
@@ -56,9 +59,8 @@ export async function getServerSideProps({query}){
     const checkDate=new Date(startDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     var locationQuery =`city=${query.location}`
-    console.log(locationQuery)
     if(location=='') locationQuery='';
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+    const res = await fetch(`http://localhost:8000/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
     return {
         props :{

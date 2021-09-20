@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import Head from 'next/head';
 import {EyeIcon,EyeOffIcon} from '@heroicons/react/solid'
 import Image from 'next/image';
@@ -24,6 +24,32 @@ function login() {
         e.preventDefault();
         console.log({email:email,password:password});
 
+    }
+    const user = session? session?.user:{};
+
+    useEffect(async () => {
+        const users = await fetchUsers();
+        var post=1;
+        if(!user.hasOwnProperty('email')) post=0;
+        users.map((serverUser)=>{
+            if (serverUser.email==user.email) post=0;
+            });
+        if (post==1) {addUser(user);}
+    }, [user]);
+
+    const addUser = async (user) =>{
+        const res = await fetch('http://localhost:8000/users',{
+            method:'POST',
+            headers:{
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify({["name"]:user.name,["email"]:user.email,["favorite"]:[],["rating"]:[],["booked"]:[]})
+        });
+    }
+    const fetchUsers = async () =>{
+        const res = await fetch('http://localhost:8000/users');
+        const users = await res.json();
+        return users;
     }
     return (
         <div className=' flex flex-col bg-gradient-to-b from-red-400 to-pink-400 h-screen w-screen justify-center items-center '>
