@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router"
 import {HeartIcon} from '@heroicons/react/outline';
 import {HeartIcon as Heart} from '@heroicons/react/solid';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {StarIcon, ChevronRightIcon, ChevronLeftIcon, MinusSmIcon, PlusSmIcon, ShareIcon} from '@heroicons/react/solid';
 import Header from "../../../components/Header";
 import { useSession } from 'next-auth/client';
@@ -19,13 +19,15 @@ function hotel({hotelData}) {
     const router = useRouter();
     const {id,startDate,endDate,noGuests}=router.query;
     const [favorite, setFavorite] = useState(false);
+    const [favoriteHotels, setFavoriteHotels] = useState([]);
+    const [star, setStar] = useState(0)
     const [session] = useSession();
-    const user =session?.user;
+    const user = session? session.user: {};
     const loggedIn = session ? true : false;
     const [imageIndex, setImageIndex] = useState(0);
     const [dateStart, setDateStart] = useState(new Date(startDate));
     const [dateEnd, setDateEnd] = useState(new Date(endDate));
-    const [guestsNum, setGuestsNum] = useState(parseInt(noGuests,10));
+    const [guestsNum, setGuestsNum] = useState(parseInt(noGuests));
     const changeGuestsNum =(num) =>{
         setGuestsNum(num);
     }
@@ -41,38 +43,101 @@ function hotel({hotelData}) {
 
     const dayDiff = (dateEnd.getTime() -dateStart.getTime())/ (1000 * 3600 * 24);
     const dateInfo =`${format(new Date(dateStart), "do MMM, yyyy")} | ${format(new Date(dateEnd), "do MMM, yyyy")}`;
+    const [userId, setUserId] = useState(0);
+    const [ratingInfo, setRatingInfo] = useState([]);
+
+    useEffect(async () => {
+        if (user.hasOwnProperty('email')){
+            const res = await fetch(`http://localhost:8000/users?email=${user.email}`);
+            const serverUser = await res.json();
+            const loggedUser = serverUser[0];
+            setUserId(loggedUser.id);
+            setFavorite(loggedUser.favorite.includes(parseInt(id)));
+            setFavoriteHotels(loggedUser.favorite);
+            setRatingInfo(loggedUser.rating);
+        }
+        else {return;}
+    }, [user]);
+    
+    const addFavorite= async () =>{
+        if(!loggedIn) alert('Please sign in!');
+        else {
+            setFavorite(!favorite);
+            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            method:'PATCH',
+            headers:{
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify({favorite:[...favoriteHotels,parseInt(id)]})
+        });
+        }
+    }
+    const deleteFavorite= async () =>{
+            setFavorite(!favorite);
+            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            method:'PATCH',
+            headers:{
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify({favorite: favoriteHotels.filter(item => item !=id)})
+        });
+    }
+
+    const addRating= async (rate) =>{
+        if(!loggedIn) alert('Please sign in!');
+        else {
+            const temp=ratingInfo.filter(item => item.id!=id);
+            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            method:'PATCH',
+            headers:{
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify({rating:[...temp,{id:parseInt(id),hotelRating:rate}]})
+            });
+            await res.json().then(response => setRatingInfo(response.rating));
+        }
+    }
+
+    const changeHotelRating = (ratingList) =>{
+        var sum =0;
+        ratingList?.forEach(item => sum=sum+item.userRating);
+        setStar(sum/ratingList.length);
+    }
+
     return (
         <div className=' bg-gray-100'>
             <Header />
             <main className='mt-16 mb-16 bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row max-w-screen-sm lg:max-w-7xl mx-auto'>
 
                 <div className=' bg-red-400 lg:w-1/4 flex flex-col items-center rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none p-4 '>
-                    <RatingPanel />
-                    <CheckPanel price={hotelData.price} star={hotelData.star} dateStart={dateStart} dateEnd={dateEnd} guestsNum={guestsNum} changeGuestsNum={changeGuestsNum} dayDiff={dayDiff} />
-                    
+                    <RatingPanel addRating={addRating}  loggedIn={loggedIn} ratingInfo={ratingInfo} id={id} userRatingInfo={hotelData.rating} userId={userId} changeHotelRating={changeHotelRating}/>
+                    <div className='hidden lg:inline-flex'>
+                        <CheckPanel
+                            price={hotelData.price} 
+                            dateStart={dateStart} 
+                            dateEnd={dateEnd} 
+                            guestsNum={guestsNum} 
+                            changeGuestsNum={changeGuestsNum} 
+                            dayDiff={dayDiff}
+                            star={star} />
+                    </div>
                 </div>
 
                 <div className='flex flex-col w-full lg:w-3/4 p-10'>
                     <div className='flex items-center justify-between' >
                         <h1 className='text-gray-800 text-2xl lg:text-3xl font-semibold'>{hotelData.location}</h1>
                         {!(favorite)?
-                            <HeartIcon onClick={() => {
-                                    if(loggedIn) setFavorite(!favorite);
-                                    else alert('Please sign in!')
-                                }} 
+                            <HeartIcon onClick={addFavorite}
                                 className='h-7 cursor-pointer hover:text-red-600'/>
                             :
-                            <Heart onClick={() => {
-                                    if(loggedIn) setFavorite(!favorite);
-                                    else alert('Please sign in!')
-                                }} 
+                            <Heart onClick={deleteFavorite} 
                                 className='h-7 cursor-pointer text-red-600'/>
                         }
                     </div>
                     <div className='flex items-center space-x-6 '>
                         <p className='flex items-center text-gray-600 py-1'>
                             <StarIcon className='h-5 text-red-400'/>
-                            {hotelData.star}
+                            {star}
                         </p>
                         <p className='flex items-center text-gray-600 cursor-pointer py-1'>
                             <ShareIcon className='h-5 text-red-400' />
@@ -122,7 +187,7 @@ function hotel({hotelData}) {
                                         }} 
                                     className='bg-gray-100 cursor-pointer text-gray-900 text-sm lg:text-md px-4 py-2 rounded-lg' >Clear dates</button>
                             </div>
-                            <section className='mt-6  flex items-center justify-evenly'>
+                            <section className='mt-6 flex flex-col lg:flex-row items-center justify-evenly'>
                                 <DateRange
                                 ranges={[selectionRange]}
                                 minDate={ new Date()}
@@ -130,7 +195,14 @@ function hotel({hotelData}) {
                                 onChange={handleSelect}
                                 
                                 />
-                                <CheckPanel price={hotelData.price} star={hotelData.star} dateStart={dateStart} dateEnd={dateEnd} guestsNum={guestsNum} changeGuestsNum={changeGuestsNum} dayDiff={dayDiff} />
+                                <CheckPanel 
+                                    price={hotelData.price}  
+                                    dateStart={dateStart} 
+                                    dateEnd={dateEnd} 
+                                    guestsNum={guestsNum} 
+                                    changeGuestsNum={changeGuestsNum} 
+                                    dayDiff={dayDiff}
+                                    star={star} />
                             </section>
                         </div> 
                     </div>
@@ -145,7 +217,7 @@ function hotel({hotelData}) {
 }
 
 export async function getServerSideProps({query}){
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels/${query.id}`);
+    const res = await fetch(`http://localhost:8000/hotels/${query.id}`);
     const hotelData = await res.json();
     return {
         props :{

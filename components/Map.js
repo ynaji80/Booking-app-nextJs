@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMapGL,{Marker, Popup} from 'react-map-gl';
 import getCenter from 'geolib/es/getCenter';
 import {LocationMarkerIcon} from '@heroicons/react/solid';
@@ -6,29 +6,35 @@ import Image from 'next/image';
 
 function Map({searchResultsData}) {
   
-
-    const [selectedResult, setSelectedResult] = useState({});
-    const coords =searchResultsData.map(result =>
-        ({
-            latitude: result.lat,
-            longitude: result.long
-        })
-    );
-    const centerCoord = getCenter(coords);
-    const [viewport, setViewport] = useState({
-        width :"100%",
-        height :"100%",
-        latitude: centerCoord.latitude,
-        longitude: centerCoord.longitude,
-        zoom: 10
-    });
     
+    const [selectedResult, setSelectedResult] = useState({});
+    const [viewport, setViewport] = useState({});
+
+    useEffect(() => {
+        const coords =searchResultsData.map(result =>
+            ({
+                latitude: result.lat,
+                longitude: result.long
+            })
+        );
+        const centerCoord = getCenter(coords);
+        setViewport({
+            width :"100%",
+            height :"100%",
+            latitude: centerCoord.latitude,
+            longitude: centerCoord.longitude,
+            zoom: 10
+        });
+        
+    }, [searchResultsData]);
+
     return (
         <ReactMapGL 
             mapStyle='mapbox://styles/ynaji80/cktax9gk24j9g18mp7l0ccro9' 
             mapboxApiAccessToken={process.env.mapbox_key} 
-            {...viewport}
             onViewportChange={(viewport) => setViewport(viewport)}
+            {...viewport}
+            
         >
             {searchResultsData.map(
                 (result,index) =>(
@@ -53,7 +59,7 @@ function Map({searchResultsData}) {
                                 <div className='flex flex-col bg-gray-200 p-4 rounded-2xl space-y-4 '>
                                     <div className='relative w-full h-40 flex-shrink-0 group-hover:scale-95 transform transition duration-300 ease-out'>
                                         <Image 
-                                            src={result.img}
+                                            src={result.img[0]}
                                             layout='fill'
                                             objectFit='cover'
                                             className='rounded-2xl'

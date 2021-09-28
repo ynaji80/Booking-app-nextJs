@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }) {
   Router.events.on('routeChangeError',progress.finish);
 
   return( 
-      <Provider session={pageProps.session}>
+      <Provider session={pageProps.session} >
       <link rel="preconnect" href="https://fonts.googleapis.com"/>
       <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet"/> 
       <link href="https://fonts.googleapis.com/css2?family=Niramit:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet"/> 

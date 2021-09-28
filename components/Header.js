@@ -110,12 +110,15 @@ function Header({placeholder}) {
                 {!toggle ?
                 <MenuIcon onClick={() => setToggle(!toggle)} className='inline lg:hidden absolute h-12 w-12 text-white bg-red-600 rounded-full shadow-xl right-8 p-2 translate-y-[75vh] cursor-pointer active:scale-90 transition duration-150 z-50 overflow-none' />
                 :
-                <div className=' lg:hidden flex flex-col items-end absolute right-8 translate-y-[60vh] '>
-                    <ul className='px-4 py-3 mb-3 relative bg-gray-900 w-36 rounded-xl shadow-xl '>
+                <div className=' lg:hidden flex flex-col items-end absolute z-50 right-8 translate-y-[60vh] '>
+                    <ul className='px-4 py-3 mb-3 relative bg-gray-900 w-40 rounded-xl shadow-xl '>
                         <li onClick={() =>{router.push('/');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white  font-niramit cursor-pointer'>Home
                         </li>
-                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className='py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>{loggedIn?`Hey ${user.name.split(' ')[0]}`:'Sign in'}
+                        <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className={`py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 ${!loggedIn?'text-white':'text-red-500'} font-niramit cursor-pointer`}>{loggedIn?`Hey ${user.name.split(' ')[0]}`:'Sign in'}
                         </li>
+                        {loggedIn && 
+                            <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className={`py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-red-500 font-niramit cursor-pointer`}>Favorite places
+                            </li>}
                         <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Devenir Hôte
                         </li>
                     </ul>

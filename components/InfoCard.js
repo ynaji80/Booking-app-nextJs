@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import {HeartIcon} from '@heroicons/react/outline';
 import {HeartIcon as Heart} from '@heroicons/react/solid';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {StarIcon,ChevronRightIcon, ChevronLeftIcon} from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 
 function InfoCard({id,img,location,title,description,star,price,startDate,endDate,noGuests}) {
     const [favorite, setFavorite] = useState(false);
@@ -24,6 +25,48 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
 
     }
 
+    const [favoriteHotels, setFavoriteHotels] = useState([]);
+    const [session] = useSession();
+    const user = session? session.user: {};
+    const loggedIn = session ? true : false;
+    const [userId, setUserId] = useState(0);
+    
+    useEffect(async () => {
+        if (user.hasOwnProperty('email')){
+            const res = await fetch(`http://localhost:8000/users?email=${user.email}`);
+            const serverUser = await res.json();
+            const loggedUser = serverUser[0];
+            setUserId(loggedUser.id);
+            setFavorite(loggedUser.favorite.includes(id));
+            setFavoriteHotels(loggedUser.favorite)
+        }
+        else {return;}
+    }, [user]);
+
+    const addFavorite= async () =>{
+        if(!loggedIn) alert('Please sign in!');
+        else {
+            setFavorite(!favorite);
+            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            method:'PATCH',
+            headers:{
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify({favorite:[...favoriteHotels,id]})
+        });
+        }
+    }
+
+    const deleteFavorite= async () =>{
+        setFavorite(!favorite);
+        const res = await fetch(`http://localhost:8000/users/${userId}`,{
+        method:'PATCH',
+        headers:{
+            'Content-type':'application/json'
+        },
+        body: JSON.stringify({favorite: favoriteHotels.filter(item => item !=id)})
+    });
+    }
     return (
         <div  className='flex flex-col md:flex-row space-x-4 md:space-x-7 font-body rounded-2xl py-4 md:py-7 px-2 md:pr-6 border-b group hover:shadow-xl hover:opacity-90 first:border-t'>
             <div className='relative flex items-center justify-between mx-auto w-80 h-52 md:w-80 md:h-52 flex-shrink-0 group-hover:scale-95 transform transition duration-300 ease-out'>
@@ -44,9 +87,9 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
                 <div className='flex mr-2 md:mr-0 justify-between' >
                     <h1 className='text-gray-500 text-sm  md:text-lg'>{location}</h1>
                     {!favorite?
-                        <HeartIcon onClick={(e) =>{e.stopPropagation();setFavorite(!favorite)}} className='h-7 cursor-pointer hover:text-red-600'/>
+                        <HeartIcon onClick={(e) =>{e.stopPropagation();addFavorite()}} className='h-7 cursor-pointer hover:text-red-600'/>
                         :
-                        <Heart onClick={(e) => {e.stopPropagation();setFavorite(!favorite)}} className='h-7 cursor-pointer text-red-600'/>
+                        <Heart onClick={(e) => {e.stopPropagation();deleteFavorite()}} className='h-7 cursor-pointer text-red-600'/>
                     }
                 </div>    
                 <h1 className='md:text-xl text-base text-gray-600 font-semibold'>{title}</h1>
