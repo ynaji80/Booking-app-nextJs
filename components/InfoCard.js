@@ -33,7 +33,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
     
     useEffect(async () => {
         if (user.hasOwnProperty('email')){
-            const res = await fetch(`http://localhost:8000/users?email=${user.email}`);
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
             const serverUser = await res.json();
             const loggedUser = serverUser[0];
             setUserId(loggedUser.id);
@@ -47,7 +47,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
         if(!loggedIn) alert('Please sign in!');
         else {
             setFavorite(!favorite);
-            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -59,7 +59,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
 
     const deleteFavorite= async () =>{
         setFavorite(!favorite);
-        const res = await fetch(`http://localhost:8000/users/${userId}`,{
+        const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
         method:'PATCH',
         headers:{
             'Content-type':'application/json'
