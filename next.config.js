@@ -4,6 +4,7 @@ module.exports = {
       domains: ['links.papareact.com','a0.muscache.com','images.unsplash.com','cf.bstatic.com'],
     },
     env:{
-      mapbox_key: 'pk.eyJ1IjoieW5hamk4MCIsImEiOiJja3Rhd3dycjExanAyMnVwYzUyemk3ZGRiIn0.BTv8iC7xciBi6IZUZBNQmg'
+      mapbox_key: 'pk.eyJ1IjoieW5hamk4MCIsImEiOiJja3Rhd3dycjExanAyMnVwYzUyemk3ZGRiIn0.BTv8iC7xciBi6IZUZBNQmg',
+      stripe_public_key: process.env.STRIPE_PUBLIC_KEY
     }
   }

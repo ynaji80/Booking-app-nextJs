@@ -1,19 +1,19 @@
 import Header from "../components/Header";
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import {format} from 'date-fns';
+import {endOfSecond, format} from 'date-fns';
 import InfoCard from "../components/InfoCard";
 import Footer from "../components/Footer";
 import Map from "../components/Map";
+import {getSession} from 'next-auth/client'
 
-
-function Search({searchResultsData}) {
+function Favorite({searchResultsData,serverUser}) {
     const router= useRouter();
     const {location, startDate, endDate, noGuests} = router.query;
     const formattedEndDate = format(new Date(endDate), "do MMM, yyyy");
     const formattedStartDate = format(new Date(startDate), "do MMM, yyyy");
     const placeholder =`${location? `${location} |`:''} ${format(new Date(startDate), "dd MMM, yyyy")} | ${format(new Date(endDate), "dd MMM, yyyy")} | ${noGuests} guests`;
-
+ 
     return (
         <div>
             <Head>
@@ -27,7 +27,7 @@ function Search({searchResultsData}) {
                     <h1 className='text-4xl font-bold mt-4 text-gray-800'>{location?`Stays in ${location}`:'Stays everywhere'}</h1>
                 
                     <div className='flex flex-col space-y-4 mt-8'>
-                        {searchResultsData?.map((item,index)=>(
+                        {searchResultsData?.map((item,index)=>{if(serverUser[0].favorite.includes(item.id)) return (
                             <InfoCard 
                                 key={index}
                                 id={item.id}
@@ -42,7 +42,7 @@ function Search({searchResultsData}) {
                                 endDate={router.query.endDate}
                                 noGuests={router.query.noGuests}
                             />
-                        )
+                        )}
                         )}
                     </div>
                 </section>
@@ -54,19 +54,32 @@ function Search({searchResultsData}) {
         </div>
     )
 }
-export async function getServerSideProps({query}){
-    const {startDate,endDate,location}=query;
+export async function getServerSideProps(context){
+    const {query}= context; 
+    const {startDate, endDate} = query;
     const checkDate=new Date(startDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
-    var locationQuery =`city=${query.location}`
-    if(location=='') locationQuery='';
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
+    const session = await getSession(context);
+    const user= await session? session.user:{};
+    const res2 = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
+    const serverUser = await res2.json();
+    if (!session) {
+        return {
+          redirect: {
+            destination: '/login',
+            permanent: false,
+          },
+        }
+      }
+
     return {
         props :{
             searchResultsData,
+            serverUser
         }
     }    
 }
 
-export default Search
+export default Favorite

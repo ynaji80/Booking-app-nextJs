@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {MenuIcon} from '@heroicons/react/solid'
+import {HeartIcon, MenuIcon} from '@heroicons/react/solid'
 import { useState } from 'react';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -64,6 +64,16 @@ function Header({placeholder}) {
             }
         });
     }
+    const goToFavorite =() =>{
+        router.push({
+            pathname:'/favorite',
+            query:{
+                startDate : new Date().toISOString(),
+                endDate : (new Date(new Date().setDate(new Date().getDate()+1))).toISOString(),
+                noGuests : 1
+            }
+        });
+    }
     const [session] = useSession();
     const user =session?.user;
     const loggedIn = session ? true : false;
@@ -100,9 +110,13 @@ function Header({placeholder}) {
                     {!loggedIn ? 
                         <p onClick={() =>router.push('/login')} className=' ring-1 ring-gray-600 cursor-pointer font-niramit font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>Sign in</p>
                     :
-                        <div onClick={() =>router.push('/login')}  className='flex items-center space-x-2 cursor-pointer'>
-                            <p className='text-md font-semibold font-niramit'> {user.name}</p>
-                            <img className='rounded-full h-8' src={user.image} />
+                        <div className='flex space-x-4 items-center justify-end'>
+                            <p onClick={goToFavorite} className=' ring-1 flex items-center justify-between ring-gray-600 cursor-pointer font-niramit font-semibold bg-white py-2 px-4 hover:bg-gray-100 rounded-full '>
+                            <HeartIcon className='h-6 text-red-600 mr-2'/>Favorite stays</p>
+                            <div onClick={() =>router.push('/login')}  className='flex items-center space-x-2 cursor-pointer'>
+                                <p className='text-md font-semibold font-niramit'> {user.name}</p>
+                                <img className='rounded-full h-8' src={user.image} />
+                            </div>
                         </div>
                     }
             </div>
@@ -117,7 +131,7 @@ function Header({placeholder}) {
                         <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className={`py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 ${!loggedIn?'text-white':'text-red-500'} font-niramit cursor-pointer`}>{loggedIn?`Hey ${user.name.split(' ')[0]}`:'Sign in'}
                         </li>
                         {loggedIn && 
-                            <li onClick={() =>{router.push('/login');setToggle(!toggle)}} className={`py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-red-500 font-niramit cursor-pointer`}>Favorite places
+                            <li onClick={() =>{goToFavorite();setToggle(!toggle)}} className={`py-1 px-2 mb-1 hover:bg-gray-800 rounded-full border-gray-300 text-red-500 font-niramit cursor-pointer`}>Favorite places
                             </li>}
                         <li className='py-1 px-2 hover:bg-gray-800 rounded-full border-gray-300 text-white font-niramit cursor-pointer'>Devenir Hôte
                         </li>

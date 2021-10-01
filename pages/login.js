@@ -38,7 +38,7 @@ function login() {
     }, [user]);
 
     const addUser = async (user) =>{
-        const res = await fetch('http://localhost:8000/users',{
+        const res = await fetch('https://booking-server-api.herokuapp.com/users',{
             method:'POST',
             headers:{
                 'Content-type':'application/json'
@@ -47,7 +47,7 @@ function login() {
         });
     }
     const fetchUsers = async () =>{
-        const res = await fetch('http://localhost:8000/users');
+        const res = await fetch('https://booking-server-api.herokuapp.com/users');
         const users = await res.json();
         return users;
     }
@@ -101,8 +101,11 @@ function login() {
                             <img className='rounded-full h-12' src={session?.user.image} />
                             <p className='text-lg font-semibold font-niramit'> {session?.user.name}</p>   
                     </div>
-                    <button onClick={() =>signOut()} className=' m-6 font-niramit text-xl text-white font-bold py-2 px-4 cursor-pointer bg-gray-400 rounded-full' >
+                    <button onClick={() =>signOut()} className=' m-6 font-niramit text-xl w-2/6 text-white font-bold py-2 px-4 cursor-pointer bg-gray-400 rounded-full' >
                         Sign out
+                    </button>
+                    <button onClick={() =>router.back()} className=' m-2 font-niramit text-xl w-2/6 text-white font-bold py-2 px-4 cursor-pointer bg-gray-400 rounded-full' >
+                        Back
                     </button>
                 </main>
             }

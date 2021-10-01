@@ -1,8 +1,26 @@
 import {StarIcon, MinusSmIcon, PlusSmIcon} from '@heroicons/react/solid';
 import {format} from 'date-fns';
+import {loadStripe} from "@stripe/stripe-js"
+import axios from "axios"
+const stripePromise= loadStripe(process.env.stripe_public_key);
 
-function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayDiff}) {
+function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayDiff,session, hotelData}) {
 
+    const createBookingSession= async () =>{
+        const stripe= await stripePromise;
+        // call the api -- server side
+        const bookingSession =  await axios.post("/api/create-checkout-session",
+        {
+            item: hotelData,
+            price:dayDiff*price+6*guestsNum,
+            email: session.user.email
+        });
+        // redirect to checkout page
+        const result= await stripe.redirectToCheckout({
+            sessionId : bookingSession.data.id
+        })
+
+    }
     return (
         <div className='bg-white rounded-xl shadow-2xl px-8 py-7 flex flex-col mt-6'>
             <div className='flex items-center justify-between'>
@@ -45,7 +63,11 @@ function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayD
                 <p className='text-gray-700 font-semibold'>Total</p>
                 <p className='text-gray-700 font-semibold'>{dayDiff?dayDiff*price+6*guestsNum:0}€</p>
             </div>
-            <button className='mt-4 py-2 px-4 bg-red-400 text-white font-semibold font-niramit rounded-md'>
+            <button
+                role='link'
+                onClick={createBookingSession}
+                disabled={!session || !dayDiff}
+                className='mt-4 py-2 px-4 bg-red-400 disabled:bg-red-300 disabled:cursor-not-allowed text-white font-semibold font-niramit rounded-md'>
                 Book
             </button>
         </div>

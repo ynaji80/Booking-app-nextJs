@@ -4,17 +4,17 @@ import { useEffect, useState } from 'react';
 function RatingPanel({addRating, loggedIn, ratingInfo, id, userRatingInfo, userId, changeHotelRating}) {
     const [hotelRating, setHotelRating] = useState(0)
     useEffect(async () => {
-        setHotelRating(ratingInfo.filter(item => item.id==id)[0]?.hotelRating);
-        const temp=userRatingInfo.filter(item => item.id!=userId);
-        const res = await fetch(`http://localhost:8000/hotels/${id}`,{
-            method:'PATCH',
-            headers:{
-                'Content-type':'application/json'
-            },
-            body: JSON.stringify({rating:[...temp,{id:userId,userRating:hotelRating}]})
-        });
-        const hotelData=await res.json();
-        changeHotelRating(hotelData.rating);
+            setHotelRating(ratingInfo.filter(item => item.id==id)[0]?.hotelRating);
+            const temp=userRatingInfo.filter(item => item.id!=userId);
+            const res = await fetch(`https://booking-server-api.herokuapp.com/hotels/${id}`,{
+                method:'PATCH',
+                headers:{
+                    'Content-type':'application/json'
+                },
+                body: JSON.stringify({rating:[...temp,{id:userId,userRating:hotelRating}]})
+            });
+            const hotelData=await res.json();
+            changeHotelRating(hotelData.rating);
     }, [ratingInfo,hotelRating])
    
     return (

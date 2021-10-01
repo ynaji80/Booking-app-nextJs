@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Head from 'next/head';
 import { useRouter } from "next/router"
 import {HeartIcon} from '@heroicons/react/outline';
 import {HeartIcon as Heart} from '@heroicons/react/solid';
@@ -14,6 +15,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import {format} from 'date-fns';
 import CheckPanel from "../../../components/CheckPanel";
+
 
 function hotel({hotelData}) {
     const router = useRouter();
@@ -48,7 +50,7 @@ function hotel({hotelData}) {
 
     useEffect(async () => {
         if (user.hasOwnProperty('email')){
-            const res = await fetch(`http://localhost:8000/users?email=${user.email}`);
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
             const serverUser = await res.json();
             const loggedUser = serverUser[0];
             setUserId(loggedUser.id);
@@ -63,7 +65,7 @@ function hotel({hotelData}) {
         if(!loggedIn) alert('Please sign in!');
         else {
             setFavorite(!favorite);
-            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -74,7 +76,7 @@ function hotel({hotelData}) {
     }
     const deleteFavorite= async () =>{
             setFavorite(!favorite);
-            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -87,7 +89,7 @@ function hotel({hotelData}) {
         if(!loggedIn) alert('Please sign in!');
         else {
             const temp=ratingInfo.filter(item => item.id!=id);
-            const res = await fetch(`http://localhost:8000/users/${userId}`,{
+            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -100,12 +102,23 @@ function hotel({hotelData}) {
 
     const changeHotelRating = (ratingList) =>{
         var sum =0;
-        ratingList?.forEach(item => sum=sum+item.userRating);
-        setStar(sum/ratingList.length);
+        var count=0
+        ratingList?.forEach(item => {
+            if(item.hasOwnProperty('userRating')){ 
+                sum = sum+item.userRating; 
+                count=count+1 
+            }
+            else{ sum=sum}
+        });
+        count!==0 ?setStar(sum/count): setStar("no review");
     }
 
     return (
         <div className=' bg-gray-100'>
+            <Head>
+                <title>Booking App</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
             <Header />
             <main className='mt-16 mb-16 bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row max-w-screen-sm lg:max-w-7xl mx-auto'>
 
@@ -119,7 +132,9 @@ function hotel({hotelData}) {
                             guestsNum={guestsNum} 
                             changeGuestsNum={changeGuestsNum} 
                             dayDiff={dayDiff}
-                            star={star} />
+                            star={star}
+                            session={session}
+                            hotelData={hotelData} />
                     </div>
                 </div>
 
@@ -202,7 +217,9 @@ function hotel({hotelData}) {
                                     guestsNum={guestsNum} 
                                     changeGuestsNum={changeGuestsNum} 
                                     dayDiff={dayDiff}
-                                    star={star} />
+                                    star={star}
+                                    session={session} 
+                                    hotelData={hotelData} />
                             </section>
                         </div> 
                     </div>
@@ -217,7 +234,7 @@ function hotel({hotelData}) {
 }
 
 export async function getServerSideProps({query}){
-    const res = await fetch(`http://localhost:8000/hotels/${query.id}`);
+    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels/${query.id}`);
     const hotelData = await res.json();
     return {
         props :{
