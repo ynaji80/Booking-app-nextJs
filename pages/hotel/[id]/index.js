@@ -50,7 +50,7 @@ function hotel({hotelData}) {
 
     useEffect(async () => {
         if (user.hasOwnProperty('email')){
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
+            const res = await fetch(`http://localhost:5000/users?email=${user.email}`);
             const serverUser = await res.json();
             const loggedUser = serverUser[0];
             setUserId(loggedUser.id);
@@ -65,7 +65,7 @@ function hotel({hotelData}) {
         if(!loggedIn) alert('Please sign in!');
         else {
             setFavorite(!favorite);
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
+            const res = await fetch(`http://localhost:5000/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -76,7 +76,7 @@ function hotel({hotelData}) {
     }
     const deleteFavorite= async () =>{
             setFavorite(!favorite);
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
+            const res = await fetch(`http://localhost:5000/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -89,7 +89,7 @@ function hotel({hotelData}) {
         if(!loggedIn) alert('Please sign in!');
         else {
             const temp=ratingInfo.filter(item => item.id!=id);
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
+            const res = await fetch(`http://localhost:5000/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -234,7 +234,7 @@ function hotel({hotelData}) {
 }
 
 export async function getServerSideProps({query}){
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels/${query.id}`);
+    const res = await fetch(`http://localhost:5000/hotels/${query.id}`);
     const hotelData = await res.json();
     return {
         props :{
