@@ -6,7 +6,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker,DateRange } from 'react-date-range';
 import { useMediaQuery } from "@react-hook/media-query";
 import { useRouter } from 'next/router'
-import logo from '../public/booking-logo.png'
+import logo from '../public/logo.png'
 import { useSession } from 'next-auth/client';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 const cities =[{
@@ -81,7 +81,7 @@ function Header({placeholder}) {
     return (
         <>
         
-        <header className=' sticky top-0 z-50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-none bg-white shadow-sm py-3 px-5 md:px-10'>
+        <header className=' bg-white sticky top-0 z-50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-none shadow-sm py-3 px-5 md:px-10'>
             <div onClick={() =>router.push('/')} className=" relative ml-4 h-14 hidden md:flex items-center cursor-pointer my-auto ">
                 <Image 
                     src= {logo}
