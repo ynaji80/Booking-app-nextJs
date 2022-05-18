@@ -59,11 +59,11 @@ export async function getServerSideProps(context){
     const {startDate, endDate} = query;
     const checkDate=new Date(startDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+    const res = await fetch(`http://localhost:5000/hotels?open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
     const session = await getSession(context);
     const user= await session? session.user:{};
-    const res2 = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
+    const res2 = await fetch(`http://localhost:5000/users?email=${user.email}`);
     const serverUser = await res2.json();
     if (!session) {
         return {
