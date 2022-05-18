@@ -8,7 +8,7 @@ function MediumCard({img,location,country}) {
         <div onClick={()=>router.push({
             pathname:'/search',
             query:{
-                location: location,
+                location: country,
                 startDate : new Date().toISOString(),
                 endDate : new Date(new Date().setDate(new Date().getDate()+1)).toISOString(),
                 noGuests : 1
