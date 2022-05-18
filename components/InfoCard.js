@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/client';
 
 function InfoCard({id,img,location,title,description,star,price,startDate,endDate,noGuests}) {
     const [favorite, setFavorite] = useState(false);
-    const [imageIndex, setImageIndex] = useState(Math.floor(Math.random() * (img.length)));
+    const [imageIndex, setImageIndex] = useState(0);
 
     const dayDiff = (new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 3600 * 24);
 
@@ -33,7 +33,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
     
     useEffect(async () => {
         if (user.hasOwnProperty('email')){
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users?email=${user.email}`);
+            const res = await fetch(`http://localhost:5000/users?email=${user.email}`);
             const serverUser = await res.json();
             const loggedUser = serverUser[0];
             setUserId(loggedUser.id);
@@ -47,7 +47,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
         if(!loggedIn) alert('Please sign in!');
         else {
             setFavorite(!favorite);
-            const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
+            const res = await fetch(`http://localhost:5000/users/${userId}`,{
             method:'PATCH',
             headers:{
                 'Content-type':'application/json'
@@ -59,7 +59,7 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
 
     const deleteFavorite= async () =>{
         setFavorite(!favorite);
-        const res = await fetch(`https://booking-server-api.herokuapp.com/users/${userId}`,{
+        const res = await fetch(`http://localhost:5000/users/${userId}`,{
         method:'PATCH',
         headers:{
             'Content-type':'application/json'
@@ -99,10 +99,10 @@ function InfoCard({id,img,location,title,description,star,price,startDate,endDat
                         <StarIcon className='h-5 text-red-400'/>
                         {star}
                     </p>
-                    <div className='flex mr-2 md:mr-0 flex-col items-end'>
+                    {/* <div className='flex mr-2 md:mr-0 flex-col items-end'>
                         <p className='text-lg lg:text-2xl font-semibold text-gray-700'>{price}€<span className='font-normal text-base'> /night</span></p>
                         <p className='text-sm text-gray-400'>{dayDiff? dayDiff*price+6*noGuests:price+6*noGuests}€ total</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
