@@ -24,7 +24,7 @@ function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayD
     return (
         <div className='bg-white rounded-xl shadow-2xl px-8 py-7 flex flex-col mt-6'>
             <div className='flex items-center justify-between'>
-                <p className='text-xl font-semibold text-gray-700'>{price}€<span className='font-normal text-sm'> /night</span></p>
+                {/* <p className='text-xl font-semibold text-gray-700'>{price}€<span className='font-normal text-sm'> /night</span></p> */}
                 <p className='flex items-center py-1'>
                     <StarIcon className='h-5 text-yellow-400'/>
                     {star}
@@ -51,7 +51,7 @@ function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayD
                     <PlusSmIcon onClick={()=>{ if(guestsNum!==9) changeGuestsNum(guestsNum+1)}} className='h-6 text-gray-400 bg-gray-100 rounded-full' />
                 </div>
             </button>
-            <div className='mt-4 flex items-center justify-between'>
+            {/* <div className='mt-4 flex items-center justify-between'>
                 <p className='text-gray-500 text-sm underline'>{`${dayDiff} nights x ${price}€`}</p>
                 <p className=' text-gray-500 '>{dayDiff*price}€</p>
             </div>
@@ -62,7 +62,7 @@ function CheckPanel({price,star,dateStart,dateEnd,guestsNum,changeGuestsNum,dayD
             <div className='mt-4 pt-4 flex items-center justify-between border-t border-gray-400'>
                 <p className='text-gray-700 font-semibold'>Total</p>
                 <p className='text-gray-700 font-semibold'>{dayDiff?dayDiff*price+6*guestsNum:0}€</p>
-            </div>
+            </div> */}
             <button
                 role='link'
                 onClick={createBookingSession}
