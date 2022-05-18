@@ -17,14 +17,14 @@ export default function Home({cityCardsData, stayCardsData, articleCardsData}) {
   return ( 
     <div>
       <Head>
-        <title>Booking App</title>
+        <title>Dwira Blanca</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <Banner />
       <main className='max-w-7xl mx-auto px-10 sm:px-16 '>
         <section className='mt-28'>
-          <h1 className='text-2xl font-niramit md:text-3xl font-bold text-gray-900'>Around the world</h1>
+          <h1 className='text-2xl font-niramit md:text-3xl font-bold text-gray-900'>Around Casablanca</h1>
           <div className='flex items-center mt-5 -mx-3 space-x-3 overflow-x-scroll scrollbar-hide p-3'>
 
               {cityCardsData?.map((card,index)=>(
@@ -37,7 +37,7 @@ export default function Home({cityCardsData, stayCardsData, articleCardsData}) {
           </div>
         </section>
         <section className='mt-14'>
-          <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-niramit'>Special stays</h1>
+          <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-niramit'>Special experiences</h1>
           <div className='mt-5  flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:justify-between p-3'>
               {stayCardsData.slice(0,3)?.map((card,index) =>(
                   <StayCard   key={index}
@@ -107,11 +107,11 @@ export default function Home({cityCardsData, stayCardsData, articleCardsData}) {
 }
 
 export async function getStaticProps(){
-  const res1 = await fetch('https://booking-server-api.herokuapp.com/cityCards');
+  const res1 = await fetch('http://localhost:5000/cityCards');
   const cityCardsData = await res1.json();
-  const res2 = await fetch('https://booking-server-api.herokuapp.com/stayCards');
+  const res2 = await fetch('http://localhost:5000/stayCards');
   const stayCardsData = await res2.json();
-  const res3 = await fetch('https://booking-server-api.herokuapp.com/articles');
+  const res3 = await fetch('http://localhost:5000/articles');
   const articleCardsData = await res3.json();
   return {props :{
       cityCardsData,
