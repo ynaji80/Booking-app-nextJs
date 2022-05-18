@@ -23,8 +23,9 @@ function Search({searchResultsData}) {
             <Header placeholder={placeholder}/>
             <main className=' flex flex-col lg:flex-row'>
                 <section className=' pl-2 md:pl-8 pt-14'>
-                    <p className='text-normal text-gray-600'>10+ stays - <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedStartDate}</span> to <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedEndDate}</span> for {noGuests} guests</p>
-                    <h1 className='text-4xl font-bold mt-4 text-gray-800'>{location?`Stays in ${location}`:'Stays everywhere'}</h1>
+                    {/* <p className='text-normal text-gray-600'>10+ stays - <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedStartDate}</span> to <span className='bg-gray-200 rounded-md px-2 py-1'>{formattedEndDate}</span> for {noGuests} guests</p> */}
+                    {/* <h1 className='text-4xl font-bold mt-4 text-gray-800'>{location?`Stays in ${location}`:'Stays everywhere'}</h1> */}
+                    <h1 className='text-4xl font-bold mt-4 text-gray-800'>Different places in Casablanca</h1>
                 
                     <div className='flex flex-col space-y-4 mt-8'>
                         {searchResultsData?.map((item,index)=>(
@@ -46,7 +47,7 @@ function Search({searchResultsData}) {
                         )}
                     </div>
                 </section>
-                {searchResultsData.length ? <section className=' mx-auto hidden lg:inline-flex lg:min-w-[600px]'>
+                {searchResultsData.length ? <section className=' mx-auto hidden lg:inline-flex lg:min-w-[800px]'>
                     <Map searchResultsData={searchResultsData}/>
                 </section>:false}       
             </main>
@@ -60,7 +61,7 @@ export async function getServerSideProps({query}){
     const uncheckDate=new Date(endDate).toLocaleDateString('en-GB').split('/').reverse().join('-');
     var locationQuery =`city=${query.location}`
     if(location=='') locationQuery='';
-    const res = await fetch(`https://booking-server-api.herokuapp.com/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
+    const res = await fetch(`http://localhost:5000/hotels?${locationQuery}&open_lte=${checkDate}&closed_gte=${uncheckDate}`);
     const searchResultsData = await res.json();
     return {
         props :{
